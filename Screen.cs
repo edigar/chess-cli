@@ -1,4 +1,5 @@
 ﻿using chess_cli.board;
+using chess_cli.chess;
 using System;
 
 namespace chess_cli
@@ -27,22 +28,28 @@ namespace chess_cli
             Console.WriteLine("  a b c d e f g h");
         }
 
+        public static ChessPosition readChessPosition()
+        {
+            string userPlay = Console.ReadLine();
+            char column = userPlay[0];
+            int line = int.Parse(userPlay[1] + "");
+
+            return new ChessPosition(column, line);
+        }
+
         public static void printPiece(Piece piece)
         {
-            if(piece.color == Color.White)
+            ConsoleColor aux = Console.ForegroundColor;
+            if (piece.color == Color.White)
             {
-                ConsoleColor aux = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.Write(piece);
-                Console.ForegroundColor = aux;
             } 
             else 
             {
-                ConsoleColor aux = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.DarkBlue;
-                Console.Write(piece);
-                Console.ForegroundColor = aux;
             }
+            Console.Write(piece);
+            Console.ForegroundColor = aux;
         }
     }
 }

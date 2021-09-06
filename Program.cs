@@ -12,14 +12,21 @@ namespace chess_cli
             try
             {
                 //Console.OutputEncoding = Encoding.UTF8;
-                Board board = new Board(8, 8);
-                board.addPiece(new Rook(board, Color.Black), new Position(0, 0));
-                board.addPiece(new Rook(board, Color.Black), new Position(1, 3));
-                board.addPiece(new King(board, Color.Black), new Position(2, 4));
+                ChessMatch match = new ChessMatch();
 
-                board.addPiece(new King(board, Color.White), new Position(3, 5));
+                while (!match.finished)
+                {
+                    Console.Clear();
+                    Screen.printBoard(match.board);
 
-                Screen.printBoard(board);
+                    Console.WriteLine();
+                    Console.Write("Origin: ");
+                    Position origin = Screen.readChessPosition().toPosition();
+                    Console.Write("Destiny: ");
+                    Position destiny = Screen.readChessPosition().toPosition();
+
+                    match.performMovement(origin, destiny);
+                }
             } catch (BoardException e)
             {
                 Console.WriteLine(e.Message);

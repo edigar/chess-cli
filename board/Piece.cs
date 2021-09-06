@@ -15,5 +15,10 @@ namespace chess_cli.board
             this.color = color;
             this.movementsNumber = 0;
         }
+
+        public void increaseMovementsNumber()
+        {
+            movementsNumber++;
+        }
     }
 }

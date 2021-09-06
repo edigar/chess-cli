@@ -40,6 +40,18 @@ namespace chess_cli.board
             piece.position = position;
         }
 
+        public Piece removePiece(Position position)
+        {
+            if(piece(position) == null)
+            {
+                return null;
+            }
+            Piece auxPiece = piece(position);
+            auxPiece.position = null;
+            pieces[position.line, position.column] = null;
+            return auxPiece;
+        }
+
         public bool isValidPosition(Position position)
         {
             if(position.line < 0 || position.line > lines || position.column < 0 || position.column > columns)
