@@ -19,10 +19,43 @@ namespace chess_cli.board
             return pieces[line, column];
         }
 
+        public Piece piece(Position position)
+        {
+            return pieces[position.line, position.column];
+        }
+
+        public bool hasPiece(Position position)
+        {
+            validatePosition(position);
+            return piece(position) != null;
+        }
+
         public void addPiece(Piece piece, Position position)
         {
+            if (hasPiece(position))
+            {
+                throw new BoardException("Has already piece in this position!");
+            }
             pieces[position.line, position.column] = piece;
             piece.position = position;
+        }
+
+        public bool isValidPosition(Position position)
+        {
+            if(position.line < 0 || position.line > lines || position.column < 0 || position.column > columns)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public void validatePosition(Position position)
+        {
+            if (!isValidPosition(position))
+            {
+                throw new BoardException("Not valid position");
+            }
         }
     }
 }

@@ -9,14 +9,19 @@ namespace chess_cli
     {
         static void Main(string[] args)
         {
+            try
+            {
+                //Console.OutputEncoding = Encoding.UTF8;
+                Board board = new Board(8, 8);
+                board.addPiece(new Rook(board, Color.Preta), new Position(0, 0));
+                board.addPiece(new Rook(board, Color.Preta), new Position(1, 3));
+                board.addPiece(new King(board, Color.Preta), new Position(2, 4));
 
-            Console.OutputEncoding = Encoding.UTF8;
-            Board board = new Board(8, 8);
-            board.addPiece(new Rook(board, Color.Preta), new Position(0, 0));
-            board.addPiece(new Rook(board, Color.Preta), new Position(1, 3));
-            board.addPiece(new King(board, Color.Preta), new Position(2, 4));
-
-            Screen.printBoard(board);
+                Screen.printBoard(board);
+            } catch (BoardException e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }
