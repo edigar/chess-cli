@@ -54,7 +54,7 @@ namespace chess_cli.board
 
         public bool isValidPosition(Position position)
         {
-            if(position.line < 0 || position.line > lines || position.column < 0 || position.column > columns)
+            if(position.line < 0 || position.line >= lines || position.column < 0 || position.column >= columns)
             {
                 return false;
             }
