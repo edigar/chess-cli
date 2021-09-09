@@ -21,6 +21,25 @@ namespace chess_cli.board
             movementsNumber++;
         }
 
+        public bool thereIsPossibleMoves()
+        {
+            bool[,] matrix = possibleMoves();
+            for(int i = 0; i < board.lines; i++)
+            {
+                for (int j = 0; j < board.columns; j++)
+                {
+                    if (matrix[i, j]) return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool canMoveTo(Position position)
+        {
+            return possibleMoves()[position.line, position.column];
+        }
+
         public abstract bool[,] possibleMoves();
     }
 }
