@@ -1,11 +1,44 @@
 ﻿using chess_cli.board;
 using chess_cli.chess;
 using System;
-
+using System.Collections.Generic;
 namespace chess_cli
 {
     class Screen
     {
+        public static void printMatch(ChessMatch chessMatch)
+        {
+            printBoard(chessMatch.board);
+            Console.WriteLine();
+            printCapturedPieces(chessMatch);
+            Console.WriteLine("Turno: " + chessMatch.turn);
+            Console.WriteLine("Aguardando jogada: " + chessMatch.currentPlayer);
+        }
+
+        public static void printCapturedPieces(ChessMatch chessMatch)
+        {
+            Console.WriteLine("Peças capturadas");
+            Console.Write("Brancas: ");
+            printGroup(chessMatch.capturedPieces(Color.White));
+            Console.WriteLine();
+            Console.Write("Pretas: ");
+            ConsoleColor aux = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            printGroup(chessMatch.capturedPieces(Color.Black));
+            Console.ForegroundColor = aux;
+            Console.WriteLine();
+        }
+
+        public static void printGroup(HashSet<Piece> group)
+        {
+            Console.Write("[");
+            foreach(Piece x in group)
+            {
+                Console.Write(x + " ");
+            }
+            Console.Write("]");
+        }
+
         public static void printBoard(Board board)
         {
             for (int i = 0; i < board.lines; i++)
@@ -60,15 +93,6 @@ namespace chess_cli
                 ConsoleColor aux = Console.ForegroundColor;
 
                 Console.ForegroundColor = piece.color == Color.White ? ConsoleColor.White : ConsoleColor.DarkBlue;
-
-                //if (piece.color == Color.White)
-                //{
-                //    Console.ForegroundColor = ConsoleColor.White;
-                //}
-                //else
-                //{
-                //    Console.ForegroundColor = ConsoleColor.DarkBlue;
-                //}
                 Console.Write(piece);
                 Console.ForegroundColor = aux;
                 Console.Write(" ");
