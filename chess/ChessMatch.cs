@@ -11,6 +11,7 @@ namespace chess_cli.chess
         public bool finished { get; private set; }
         private HashSet<Piece> pieces;
         private HashSet<Piece> captured;
+        public bool isCheckmate { get; private set; }
 
         public ChessMatch()
         {
@@ -18,12 +19,13 @@ namespace chess_cli.chess
             turn = 1;
             currentPlayer = Color.White;
             finished = false;
+            isCheckmate = false;
             pieces = new HashSet<Piece>();
             captured = new HashSet<Piece>();
             putPieces();
         }
 
-        public void performMovement(Position origin, Position destiny)
+        public Piece performMovement(Position origin, Position destiny)
         {
             Piece piece = board.removePiece(origin);
             piece.increaseMovementsNumber();
@@ -33,11 +35,34 @@ namespace chess_cli.chess
             {
                 captured.Add(capturedPiece);
             }
+
+            return capturedPiece;
+        }
+
+        public void undoMovement(Position origin, Position destiny, Piece capturedPiece)
+        {
+            Piece piece = board.removePiece(destiny);
+            piece.decreaseMovementsNumber();
+            if(capturedPiece != null)
+            {
+                board.addPiece(capturedPiece, destiny);
+                captured.Remove(capturedPiece);
+            }
+            board.addPiece(piece, origin);
         }
 
         public void play(Position origin, Position destiny)
         {
-            performMovement(origin, destiny);
+            Piece capturedPiece = performMovement(origin, destiny);
+
+            if (checkmate(currentPlayer))
+            {
+                undoMovement(origin, destiny, capturedPiece);
+                throw new BoardException("Você não pode se colocar em xeque");
+            }
+
+            isCheckmate = checkmate(enemyColor(currentPlayer)) ? true : false;
+
             turn++;
             changePlayer();
         }
@@ -79,13 +104,52 @@ namespace chess_cli.chess
         public HashSet<Piece> gamePieces(Color color)
         {
             HashSet<Piece> aux = new HashSet<Piece>();
-            foreach (Piece x in captured)
+            foreach (Piece x in pieces)
             {
                 if (x.color == color) aux.Add(x);
             }
             aux.ExceptWith(capturedPieces(color));
             
             return aux;
+        }
+
+        private Color enemyColor(Color color)
+        {
+            if (color == Color.White) return Color.Black;
+            else return Color.White;
+        }
+
+        private Piece king(Color color)
+        {
+            foreach(Piece x in gamePieces(color))
+            {
+                if(x is King)
+                {
+                    return x;
+                }
+            }
+
+            return null;
+        }
+
+        public bool checkmate(Color color)
+        {
+            Piece K = king(color);
+            if (K == null)
+            {
+                throw new BoardException("There is no " + color + " king on the board!");
+            }
+
+            foreach (Piece x in gamePieces(enemyColor(color)))
+            {
+                bool[,] matrix = x.possibleMoves();
+                if(matrix[K.position.line, K.position.column])
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public void addNewPiece(char column, int line, Piece piece)

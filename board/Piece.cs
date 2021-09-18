@@ -21,6 +21,11 @@ namespace chess_cli.board
             movementsNumber++;
         }
 
+        public void decreaseMovementsNumber()
+        {
+            movementsNumber--;
+        }
+
         public bool thereIsPossibleMoves()
         {
             bool[,] matrix = possibleMoves();

@@ -13,6 +13,10 @@ namespace chess_cli
             printCapturedPieces(chessMatch);
             Console.WriteLine("Turno: " + chessMatch.turn);
             Console.WriteLine("Aguardando jogada: " + chessMatch.currentPlayer);
+            if(chessMatch.isCheckmate)
+            {
+                Console.WriteLine("Checkmate!");
+            }
         }
 
         public static void printCapturedPieces(ChessMatch chessMatch)
