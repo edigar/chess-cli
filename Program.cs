@@ -43,6 +43,8 @@ namespace chess_cli
                         Console.ReadLine();
                     }
                 }
+                Console.Clear();
+                Screen.printMatch(match);
             } catch (BoardException e)
             {
                 Console.WriteLine(e.Message);

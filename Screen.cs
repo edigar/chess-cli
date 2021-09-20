@@ -11,12 +11,22 @@ namespace chess_cli
             printBoard(chessMatch.board);
             Console.WriteLine();
             printCapturedPieces(chessMatch);
+            Console.WriteLine();
             Console.WriteLine("Turno: " + chessMatch.turn);
-            Console.WriteLine("Aguardando jogada: " + chessMatch.currentPlayer);
-            if(chessMatch.isCheckmate)
+            if(!chessMatch.finished)
+            {
+                Console.WriteLine("Aguardando jogada: " + chessMatch.currentPlayer);
+                if (chessMatch.isCheck)
+                {
+                    Console.WriteLine("Check!");
+                }
+            } else
             {
                 Console.WriteLine("Checkmate!");
+                Console.WriteLine("Vencedor: " + chessMatch.currentPlayer);
             }
+
+            
         }
 
         public static void printCapturedPieces(ChessMatch chessMatch)

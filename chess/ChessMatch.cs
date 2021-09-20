@@ -11,7 +11,7 @@ namespace chess_cli.chess
         public bool finished { get; private set; }
         private HashSet<Piece> pieces;
         private HashSet<Piece> captured;
-        public bool isCheckmate { get; private set; }
+        public bool isCheck { get; private set; }
 
         public ChessMatch()
         {
@@ -19,7 +19,7 @@ namespace chess_cli.chess
             turn = 1;
             currentPlayer = Color.White;
             finished = false;
-            isCheckmate = false;
+            isCheck = false;
             pieces = new HashSet<Piece>();
             captured = new HashSet<Piece>();
             putPieces();
@@ -55,16 +55,20 @@ namespace chess_cli.chess
         {
             Piece capturedPiece = performMovement(origin, destiny);
 
-            if (checkmate(currentPlayer))
+            if (check(currentPlayer))
             {
                 undoMovement(origin, destiny, capturedPiece);
                 throw new BoardException("Você não pode se colocar em xeque");
             }
 
-            isCheckmate = checkmate(enemyColor(currentPlayer)) ? true : false;
+            isCheck = check(enemyColor(currentPlayer));
 
-            turn++;
-            changePlayer();
+            if (isCheckMate(enemyColor(currentPlayer))) finished = true;
+            else
+            {
+                turn++;
+                changePlayer();
+            }
         }
 
         public void validateOrigin(Position position)
@@ -132,7 +136,7 @@ namespace chess_cli.chess
             return null;
         }
 
-        public bool checkmate(Color color)
+        public bool check(Color color)
         {
             Piece K = king(color);
             if (K == null)
@@ -150,6 +154,36 @@ namespace chess_cli.chess
             }
 
             return false;
+        }
+
+        public bool isCheckMate(Color color)
+        {
+            if (!check(color)) return false;
+
+            foreach(Piece x in gamePieces(color))
+            {
+                bool[,] matrix = x.possibleMoves();
+                for (int i = 0; i < board.lines; i++)
+                {
+                    for(int j = 0; j < board.columns; j++)
+                    {
+                        if(matrix[i, j])
+                        {
+                            Position origin = x.position;
+                            Position destiny = new Position(i, j);
+                            Piece capturedPiece = performMovement(origin, destiny);
+                            bool isCheck = check(color);
+                            undoMovement(origin, destiny, capturedPiece);
+                            if(!isCheck)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return true;
         }
 
         public void addNewPiece(char column, int line, Piece piece)
