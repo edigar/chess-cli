@@ -36,6 +36,26 @@ namespace chess_cli.chess
                 captured.Add(capturedPiece);
             }
 
+            // Especial move castling kingside
+            if(piece is King && destiny.column == origin.column + 2)
+            {
+                Position originRook = new Position(origin.line, origin.column + 3);
+                Position destinyRook = new Position(origin.line, origin.column + 1);
+                Piece Rook = board.removePiece(originRook);
+                Rook.increaseMovementsNumber();
+                board.addPiece(Rook, destinyRook);
+            }
+
+            // Especial move castling queenside
+            if (piece is King && destiny.column == origin.column - 2)
+            {
+                Position originRook = new Position(origin.line, origin.column - 4);
+                Position destinyRook = new Position(origin.line, origin.column - 1);
+                Piece Rook = board.removePiece(originRook);
+                Rook.increaseMovementsNumber();
+                board.addPiece(Rook, destinyRook);
+            }
+
             return capturedPiece;
         }
 
@@ -49,6 +69,26 @@ namespace chess_cli.chess
                 captured.Remove(capturedPiece);
             }
             board.addPiece(piece, origin);
+
+            // Special move castling kingside
+            if (piece is King && destiny.column == origin.column + 2)
+            {
+                Position originRook = new Position(origin.line, origin.column + 3);
+                Position destinyRook = new Position(origin.line, origin.column + 1);
+                Piece Rook = board.removePiece(destinyRook);
+                Rook.decreaseMovementsNumber();
+                board.addPiece(Rook, originRook);
+            }
+
+            // Special move castling queenside
+            if (piece is King && destiny.column == origin.column - 2)
+            {
+                Position originRook = new Position(origin.line, origin.column - 4);
+                Position destinyRook = new Position(origin.line, origin.column - 1);
+                Piece Rook = board.removePiece(destinyRook);
+                Rook.decreaseMovementsNumber();
+                board.addPiece(Rook, originRook);
+            }
         }
 
         public void play(Position origin, Position destiny)
@@ -198,7 +238,7 @@ namespace chess_cli.chess
             addNewPiece('b', 1, new Knight(board, Color.White));
             addNewPiece('c', 1, new Bishop(board, Color.White));
             addNewPiece('d', 1, new Queen(board, Color.White));
-            addNewPiece('e', 1, new King(board, Color.White));
+            addNewPiece('e', 1, new King(board, Color.White, this));
             addNewPiece('f', 1, new Bishop(board, Color.White));
             addNewPiece('g', 1, new Knight(board, Color.White));
             addNewPiece('h', 1, new Rook(board, Color.White));
@@ -215,7 +255,7 @@ namespace chess_cli.chess
             addNewPiece('b', 8, new Knight(board, Color.Black));
             addNewPiece('c', 8, new Bishop(board, Color.Black));
             addNewPiece('d', 8, new Queen(board, Color.Black));
-            addNewPiece('e', 8, new King(board, Color.Black));
+            addNewPiece('e', 8, new King(board, Color.Black, this));
             addNewPiece('f', 8, new Bishop(board, Color.Black));
             addNewPiece('g', 8, new Knight(board, Color.Black));
             addNewPiece('h', 8, new Rook(board, Color.Black));
