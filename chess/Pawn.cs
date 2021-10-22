@@ -4,8 +4,10 @@ namespace chess_cli.chess
 {
     class Pawn : Piece
     {
-        public Pawn(Board board, Color color) : base(board, color)
+        private ChessMatch chessMatch;
+        public Pawn(Board board, Color color, ChessMatch chessMatch) : base(board, color)
         {
+            this.chessMatch = chessMatch;
         }
 
         public override string ToString()
@@ -58,6 +60,21 @@ namespace chess_cli.chess
                 {
                     matrix[position.line, position.column] = true;
                 }
+
+                // Special move En passant
+                if(position.line == 3)
+                {
+                    Position left = new Position(position.line, position.column - 1);
+                    if(board.isValidPosition(left) && thereIsEnemy(left) && board.piece(left) == chessMatch.vulnerableEnPassant)
+                    {
+                        matrix[left.line - 1, left.column] = true;
+                    }
+                    Position right = new Position(position.line, position.column + 1);
+                    if (board.isValidPosition(right) && thereIsEnemy(right) && board.piece(right) == chessMatch.vulnerableEnPassant)
+                    {
+                        matrix[right.line - 1, right.column] = true;
+                    }
+                }
             }
             else
             {
@@ -80,6 +97,20 @@ namespace chess_cli.chess
                 if (board.isValidPosition(position) && thereIsEnemy(position))
                 {
                     matrix[position.line, position.column] = true;
+                }
+
+                if (position.line == 4)
+                {
+                    Position left = new Position(position.line, position.column - 1);
+                    if (board.isValidPosition(left) && thereIsEnemy(left) && board.piece(left) == chessMatch.vulnerableEnPassant)
+                    {
+                        matrix[left.line + 1, left.column] = true;
+                    }
+                    Position right = new Position(position.line, position.column + 1);
+                    if (board.isValidPosition(right) && thereIsEnemy(right) && board.piece(right) == chessMatch.vulnerableEnPassant)
+                    {
+                        matrix[right.line + 1, right.column] = true;
+                    }
                 }
             }
 
