@@ -126,6 +126,21 @@ namespace chess_cli.chess
                 throw new BoardException("Você não pode se colocar em xeque");
             }
 
+            Piece piece = board.piece(destiny);
+
+            // Special move Promotion
+            if(piece is Pawn)
+            {
+                if((piece.color == Color.White && destiny.line == 0) || (piece.color == Color.Black && destiny.line == 7))
+                {
+                    piece = board.removePiece(destiny);
+                    pieces.Remove(piece);
+                    Piece queen = new Queen(board, piece.color);
+                    board.addPiece(queen, destiny);
+                    pieces.Add(queen);
+                }
+            }
+
             isCheck = check(enemyColor(currentPlayer));
 
             if (isCheckMate(enemyColor(currentPlayer))) finished = true;
@@ -135,7 +150,6 @@ namespace chess_cli.chess
                 changePlayer();
             }
 
-            Piece piece = board.piece(destiny);
             // Special move En passant
             vulnerableEnPassant = piece is Pawn && (destiny.line == origin.line - 2 || destiny.line == origin.line + 2) ? piece : null;
         }
